@@ -2,5 +2,53 @@ export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
 export const settings = {
-
+    pageSelector:'.page',
+    pageSettings:{
+        wrapper:'.page__wrapper',
+        counter:'.header__basket-counter',
+        basket:'.header__basket',
+        lockedWrapper:'.page__wrapper_locked'
+    },
+    gallerySelector:'.gallery',
+    gallerySettings:{
+        itemClass:'.gallery__item'
+    },
+    cardCatalogTemplate:'#card-catalog',
+    cardCatalogSettings:{
+        title:'.card__title',
+        text:'.card__text',
+        category:'.card__category',
+        image:'.card__image',
+        price:'.card__price'
+    },
+    successTemplate:'#success',
+    successSettings:{
+        title:'.order-success__title',
+        text:'.order-success__description',
+        button:'.order-success__close'
+    },
+    cardPreviewTemplate:'#card-preview',
+    cardPreviewSettings:{
+        title:'.card__title',
+        text:'.card__text',
+        category:'.card__category',
+        price:'.card__price'
+    },
+    cardBasketTemplate:'#card-basket',
+    cardBasketSettings:{
+        index:'.card-basket__index',
+        title:'.card__title',
+        price:'.card__price'
+    },
+    basketTemplate:'#basket',
+    basketSettings:{
+        list:'.basket__list',
+        total:'.basket__price',
+    },
+    orderTemplate:'#order',
+    orderSettings:{
+    },
+    contactsTemplate:'#contacts',
+    contactsSettings:{
+    }
 };
