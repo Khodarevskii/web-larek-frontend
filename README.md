@@ -4,6 +4,7 @@
 
 
 Архетиктура: ООП
+
 Паттерн:MVP
 
 Структура проекта:
@@ -14,6 +15,7 @@
 - src/types/common/ — папка с типами переиспользуемых компонентов
 - src/types/model/ — папка с типами состояния модели Данных
 - src/types/base/ — папка с типами базового кода
+
 Важные файлы:
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
@@ -21,6 +23,7 @@
 - src/scss/styles.scss — корневой файл стилей
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
+
 Компоненты проекта:
 - src/types/components/view/Basket.ts - Файл с интерфейсом для корзины товаров в модальном окне
 - src/types/components/view/Card.ts - Файл с интерфейсом для карточки на главной странице
