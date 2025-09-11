@@ -131,16 +131,95 @@
 
 Компоненты проекта:
 - src/types/components/view/Basket.ts - Файл с интерфейсом для корзины товаров в модальном окне
+    - состоит из двух интрефейсов interface BasketData,interface BasketSettings которые нужны для типизаций корзины товара в моадльном окне 
 - src/types/components/view/Card.ts - Файл с интерфейсом для карточки на главной странице
+    - состоит из двух интрефейсов interface CardData,interface CardSettings которые нужны для типизаций карточик товара на главной старнице
 - src/types/components/view/CardBasket.ts - Файл с интерфейсом карточки в модальном окне корзины
+    - состоит из двух интрефейсов interface CardBasketData,interface CardBasketSettings которые нужны для типизаций  карточик товара в модальное окне корзины
 - src/types/components/view/CardPreview.ts - Файл с интерфейсом карточки в модальном окне товара
+    - состоит из двух интрефейсов interface CardPreviewData,interface CardPreviewSettings которые нужны для типизаций  карточик товара в модальное окне товара
 - src/types/components/view/Contacts.ts - Файл с интерфейсом для модального окна контактов
+    - состоит из двух интрефейсов interface ContactsData,interface ContactsSettings которые нужны для типизаций  формы контактов в модальное окне контактов
 - src/types/components/view/HeaderBasket.ts - Файл с интерфейсом для корзины товаров в блоке header
+    - состоит из двух интрефейсов interface HeaderBasketData,interface HeaderBasketSettings которые нужны для типизаций  корзины в шапке старнице
 - src/types/components/view/Payment.ts - Файл с интерфейсом для модального окна выбора способа оплаты
-- src/types/components/view/Product.ts - Файл с интерфейсом для  товара 
+    - состоит из двух интрефейсов interface HeaderBasketData,interface HeaderBasketSettings которые нужны для типизаций  корзины в шапке главной старнице
+- src/types/components/view/Product.ts - Файл с интерфейсом для  товара
+    - состоит из трех интрефейсов interface ProductData,interface ProductSetting и IProductAPI которые нужны для типизаций товаров получаймых из api
 - src/types/components/view/Success.ts - Файл с интерфейсом для модального окна успешной оплаты
+    - состоит из двух интрефейсов interface SuccessData,interface successSettings которые нужны для типизаций модального окна об успешной оплате
+
 Базовое отоброжения компонентов проекта на страницу:
 - src/types/base/BaseView.ts - Файл с классом для базового отображения на страницу компонентов 
+
+
+
+ 
+
+## Базовый код приложения 
+ 
+
+### Класс Api 
+
+В класс Api входит логика запросов. Адрес сервера передается в конструктор, сюда же передается объект с заголовками запросов.  
+ 
+
+
+`constructor(baseUrl: string, options: RequestInit = {})`- принимает базовый URL и глобальные опции для всех запросов(опционально).
+
+Поля:   
+
+- `readonly baseUrl: string` - базовый url для api 
+
+- `protected options: RequestInit` - объект с настройками для формирования запроса. 
+
+
+
+   
+Методы:  
+
+- `protected handleResponse(response: Response): Promise<object>` - обработка ответа сервера. Если ответ есть, он возвращается в json, иначе формируется ошибка. 
+
+- `get(uri: string): Promise<object>` - GET запрос на переданный ендпоинт, возвращение промиса с объектом, содержащимся в ответе сервера. 
+
+- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - прием объекта с данными, они передаются в JSON в теле запроса, данные отправляются на ендпоинт в качестве параметра при вызове метода. POST запрос - параметр по умолчанию, но его можно указать третьим параметром при вызове. 
+
+ ### Класс BaseView
+
+В класс BaseView входит логика отоброжения нужного интрефейса на старнице.
+
+
+`constructor(protected element: HTMLElement, protected settings: S)`- принимает базовый URL и глобальные опции для всех запросов(опционально).
+
+методы :
+
+- ` protected setupListeners(callback: () => void)` - метод, который вызовем для установки слушателей из рендера или при инициализации
+
+- `protected init() {}` - методы жизненного цикла
+
+- `render(data: unknown): HTMLElement{}` - рендер, вызывается когда надо обновить отображение с данными
+
+
+
+### Класс EventEmitter
+
+В класс EventEmitter входит логика установки, снятие, инициирования событие.
+
+
+`constructor() {this._events = new Map<EventName, Set<Subscriber>>();}`- принимает событие и элемент на который нужно установить его
+
+методы :
+
+- `on<T extends object>(eventName: EventName, callback: (event: T) => void) {if (!this._events.has(eventName)) {this._events.set(eventName, new Set<Subscriber>());}this._events.get(eventName)?.add(callback);` - метод, для сутановки обработчика событий 
+
+- `off(eventName: EventName, callback: Subscriber) {if (this._events.has(eventName)) {this._events.get(eventName)!.delete(callback);if (this._events.get(eventName)?.size === 0) {this._events.delete(eventName);}}` - метод, для снятие обработчика событий 
+
+- `emit<T extends object>(eventName: string, data?: T) {this._events.forEach((subscribers, name) => {f (name === '*') subscribers.forEach(callback => callback({eventName,data}));if (name instanceof RegExp && name.test(eventName) || name === eventName) {subscribers.forEach(callback => callback(data));}});}` - метод, для инициирования обработчика событий 
+
+- `onAll(callback: (event: EmitterEvent) => void) {this.on("*", callback);}` - Слушать все события
+- `  offAll() {this._events = new Map<string, Set<Subscriber>>();}` - Сбросить все обработчики
+- ` trigger<T extends object>(eventName: string, context?: Partial<T>) {return (event: object = {}) => {this.emit(eventName, {...(event || {}),...(context || {})});};}` - Сделать коллбек триггер, генерирующий событие при вызове
+
 
 ## Установка и запуск
 Для установки и запуска проекта необходимо выполнить команды
@@ -173,4 +252,15 @@ yarn build
 ## Об архитектуре 
 
 Взаимодействия внутри приложения происходят через события. Модели инициализируют события, слушатели событий в основном коде выполняют передачу данных компонентам отображения, а также вычислениями между этой передачей, и еще они меняют значения в моделях.
- 
+
+
+## Основные интерфейсы 
+- src/types/components/view/Basket.ts - Файл с интерфейсом для корзины товаров в модальном окне
+- src/types/components/view/Card.ts - Файл с интерфейсом для карточки на главной странице
+- src/types/components/view/CardBasket.ts - Файл с интерфейсом карточки в модальном окне корзины
+- src/types/components/view/CardPreview.ts - Файл с интерфейсом карточки в модальном окне товара
+- src/types/components/view/Contacts.ts - Файл с интерфейсом для модального окна контактов
+- src/types/components/view/HeaderBasket.ts - Файл с интерфейсом для корзины товаров в блоке header
+- src/types/components/view/Payment.ts - Файл с интерфейсом для модального окна выбора способа оплаты
+- src/types/components/view/Product.ts - Файл с интерфейсом для  товара
+- src/types/components/view/Success.ts - Файл с интерфейсом для модального окна успешной оплаты
