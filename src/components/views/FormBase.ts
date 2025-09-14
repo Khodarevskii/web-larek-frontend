@@ -1,0 +1,43 @@
+import { Element } from '../base/Element';
+import { IEvents } from '../base/events';
+interface IFormStatus {
+    valid: boolean;
+    errors: string[];
+}
+export class FormBase<T> extends Element<IFormStatus> {
+    protected _submit: HTMLButtonElement;
+    protected _errors: HTMLElement;
+    constructor(container: HTMLFormElement, protected events: IEvents) {
+        super(container);
+        this._submit = container.querySelector('button[type=submit]') as HTMLButtonElement;
+        this._errors = container.querySelector('.form__errors') as HTMLElement;
+        this.container.addEventListener('input', (e: Event) => {
+            const target = e.target as HTMLInputElement;
+            const field = target.name as keyof T;
+            const value = target.value;
+            this.onInputChange(field, value);
+        });
+        this.container.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            this.events.emit(`${(this.container as HTMLFormElement).name}:submit`);
+        });
+    }
+    protected onInputChange(field: keyof T, value: string) {
+        this.events.emit(`${(this.container as HTMLFormElement).name}:change`, {
+            field,
+            value
+        });
+    }
+    set valid(value: boolean) {
+        this.setElementDisabled(this._submit, !value);
+    }
+    set errors(value: string) {
+        this.setText(this._errors, value);
+    }
+    render(state: Partial<T> & IFormStatus) {
+        const {valid, errors, ...inputs} = state;
+        super.render({valid, errors});
+        Object.assign(this, inputs);
+        return this.container;
+    }
+}

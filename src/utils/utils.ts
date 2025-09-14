@@ -133,3 +133,10 @@ export function createElement<
     }
     return element;
 }
+
+export function formatPrice(price: number | null): string {
+    if (price === null) {
+        return '';
+    }
+    return price.toString();
+}
