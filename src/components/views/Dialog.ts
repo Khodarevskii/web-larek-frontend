@@ -10,7 +10,6 @@ export class Dialog extends Element<IDialogData> {
         super(container);
         this._closeButton = container.querySelector('.modal__close') as HTMLButtonElement;
         this._content = container.querySelector('.modal__content') as HTMLElement;
-        this._closeButton.addEventListener('click', this.close.bind(this));
         this.container.addEventListener('click', this.close.bind(this));
         this._content.addEventListener('click', (event) => event.stopPropagation());
     }
@@ -18,11 +17,14 @@ export class Dialog extends Element<IDialogData> {
         this._content.replaceChildren(value);
     }
     open(): void {
-        this.container.classList.add('modal_active');
+        if(!this.container.classList.contains('modal_active')){
+             this.toggleClass(this.container,'modal_active')
+        }
+       
         this.events.emit('modal:open');
     }
     close(): void {
-        this.container.classList.remove('modal_active');
+        this.toggleClass(this.container,'modal_active');
         this.content = null;
         this.events.emit('modal:close');
     }

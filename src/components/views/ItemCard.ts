@@ -59,7 +59,9 @@ export class ItemCard extends Element<IItemView> {
     }
     set category(value: string) {
         this.setText(this._category, value);
-        this._category?.classList.add(CategoryClass[value] || 'card__category_other');
+        if(!this._category.classList.contains(CategoryClass[value])){
+             this.toggleClass( this._category,`${CategoryClass[value]}`)
+        }
     }
     set price(value: string) {
         this.setText(this._price, value ? `${value} синапсов` : 'Бесценно');
@@ -72,7 +74,7 @@ export class ItemCard extends Element<IItemView> {
     }
     set button(data: { text: string; disabled: boolean }) {
         if (this._button) {
-            this._button.textContent = data.text;
+            this.setText( this._button,data.text)
             this.setElementDisabled(this._button, data.disabled);
         }
     }

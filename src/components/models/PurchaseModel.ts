@@ -32,7 +32,7 @@ export class PurchaseModel extends Entity<IPurchaseData> implements IPurchaseMod
         return !!(this.order.payment && this.order.address?.trim());
     }
     validateContacts(): boolean {
-        return !!(this.order.email?.trim() && this.order.phone?.trim());
+        return !!(this.order.email?.trim() && this.order.phone?.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.order.email));
     }
     clear(): void {
         this.order = {};
